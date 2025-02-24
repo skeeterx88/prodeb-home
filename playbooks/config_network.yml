@@ -1,0 +1,20 @@
+---
+- name: Criando inventário temporário
+  hosts: localhost
+  tasks:
+    - ansible.builtin.add_host:
+        name: "{{ vm_ip_address }}"
+        groups: vm_group_temp
+
+- name: Configurar Rede
+  hosts: vm_group_temp
+  gather_facts: true
+  tasks:
+    - name: Configurações de Rede. 
+      import_role:
+        name: config_network
+
+    - name: Atualizar variável para IP modificado
+      set_stats:
+        data:
+          vm_ip_address: "{{ vm_ip_address_final | default(vm_ip_address)}}"

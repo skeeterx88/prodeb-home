@@ -1,0 +1,11 @@
+# Variáveis da role enviar_email
+email_to: "{{ email_destination }}"
+email_from: "prodeb-aap@prodeb.ba.gov.br"
+email_subject: "ANSIBLE - Resumo da VM {{ vm_name }}"
+
+# Configurações do servidor SMTP
+smtp_host: "envio.ba.gov.br"
+smtp_port: 25
+smtp_user: "" # Deixe em branco para sem autenticação
+smtp_pass: "" # Deixe em branco para sem autenticação
+smtp_secure: "no" # Ou "none", dependendo da versão do Ansible

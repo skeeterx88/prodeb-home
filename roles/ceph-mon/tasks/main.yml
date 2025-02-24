@@ -1,0 +1,17 @@
+---
+# tasks file for ceph-mon
+
+- name: Install Ceph monitor packages
+  apt:
+    name: ceph-mon
+    state: present
+  notify: restart ceph mon
+
+- name: Create monitor keyring
+  command: ceph-authtool --create-keyring /etc/ceph/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+  args:
+    creates: /etc/ceph/ceph.mon.keyring
+
+- name: Add monitor to Ceph cluster
+  command: ceph-mon --mkfs -i {{ ansible_hostname }}
+  when: not ceph_mon_installed.stat.exists

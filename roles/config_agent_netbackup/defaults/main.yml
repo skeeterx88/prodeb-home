@@ -1,0 +1,15 @@
+---
+netbackup_download_url: "http://www.portalprodeb.ba.gov.br/ftp/BACKUP/NETBACKUP/NetBackup_10.1.1_RedHat_7-9_Debian_9-11_Ubuntu_16.04-22.04.tar.gz"
+netbackup_master_server: "netbackupmasterlinux.datacenter.prodeb"
+netbackup_token: "BLHRNXROZXWRGYDZ"
+netbackup_client_name: "{{ ansible_hostname }}"
+
+netbackup_servers:
+  - "hpebackup01.datacenter.prodeb"
+  - "hpebackup02.datacenter.prodeb"
+  - "NETBACKUPMEDIASERVER02.datacenter.prodeb"
+  - "msappliance01.datacenter.prodeb"
+
+netbackup_install_dir: "/usr/openv/netbackup"
+netbackup_bpconf_file: "/usr/openv/netbackup/bp.conf"
+

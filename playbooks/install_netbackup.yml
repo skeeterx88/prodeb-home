@@ -1,0 +1,20 @@
+---
+- name: Criando inventário temporário
+  hosts: localhost
+  tasks:
+    - ansible.builtin.add_host:
+        name: "{{ vm_ip_address }}"
+        groups: vm_group_temp
+  
+- name: Configurar Backup
+  hosts: vm_group_temp
+  gather_facts: yes
+  environment:
+    http_proxy: http://proxy.prodeb.ba.gov.br:3128
+    https_proxy: http://proxy.prodeb.ba.gov.br:3128
+    no_proxy: "localhost,127.0.0.1,{{ vm_ip_address | ipaddr('network') }}"
+  tasks:
+    - name: Execute netbackup_agent role
+      import_role:
+        name: config_agent_netbackup
+ 

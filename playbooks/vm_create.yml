@@ -1,0 +1,21 @@
+---
+- name: Create a VM on VMware
+  hosts: localhost
+  gather_facts: no
+  
+  tasks:
+    # Definir o nome temporário e final da VM
+    - name: Definir nome temporário da VM
+      set_stats:
+        data:
+          vm_name_temp: "{{ vm_name_temp }}"
+          vm_name_id: "{{ vm_name_id }}"
+  
+    - name: Execute create_vm role
+      import_role:
+        name: vm_create
+      register: role_createvm
+
+    - name: Debug role_createvm
+      debug:
+        var: role_createvm

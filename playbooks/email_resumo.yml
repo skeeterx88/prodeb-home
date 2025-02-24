@@ -1,0 +1,9 @@
+---
+- name: Enviar email
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Enviar email com resumo. 
+      import_role:
+        name: email_resumo
+ 

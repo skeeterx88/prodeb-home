@@ -1,0 +1,11 @@
+- name: Enviar e-mail de resumo
+  ansible.builtin.mail:
+    to: "{{ email_to }}"
+    from: "{{ email_from }}"
+    subject: "{{ email_subject }}"
+    body: "{{ lookup('template', 'email_body.j2') }}" # Usando lookup para o template
+    server: "{{ smtp_host }}"
+    port: "{{ smtp_port }}"
+    username: "{{ smtp_user }}" # Variáveis para autenticação (ou em branco)
+    password: "{{ smtp_pass }}" # Variáveis para autenticação (ou em branco)
+    secure: "{{ smtp_secure }}" # Tipo de conexão segura

@@ -1,0 +1,5 @@
+A VM {{ vm_name }} foi criada e ligada.
+O endereço IP atribuído é: {{ vm_info.instance.ipv4 }}
+
+{% if ansible_facts.services['nginx'] is defined %}
+Status do Nginx: {{ ansible_facts.services['nginx'].state | default('Não disponível') }}

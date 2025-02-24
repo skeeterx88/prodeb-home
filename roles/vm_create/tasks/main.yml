@@ -1,0 +1,85 @@
+---
+- name: Criação da VM "{{ vm_name }}"
+  community.vmware.vmware_guest:
+    ## Autenticação através das informações armazenadas no AWX [Resources/Credentials]
+    hostname: "{{ lookup('ansible.builtin.env', 'VMWARE_HOST') }}"
+    username: "{{ lookup('ansible.builtin.env', 'VMWARE_USER') }}"
+    password: "{{ lookup('ansible.builtin.env', 'VMWARE_PASSWORD') }}"
+    validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default(true) }}"
+    ## Dados de Alocação da VM
+    datacenter: "{{ datacenter }}"
+    cluster: "{{ cluster }}"
+    folder: "{{ folder }}"
+    datastore: "{{ datastore }}"
+    ## Parâmetros da VM
+    template: "{{ templates_map[os_choice] }}"
+    name: "{{ vm_name }}"
+    hardware:
+      num_cpus: "{{ cpus }}"
+      hotadd_cpu: true
+      hotremove_cpu: true
+      memory_mb: "{{ memory }}"
+      hotadd_memory: true
+      scsi: lsilogic
+    state: present
+  delegate_to: localhost
+
+- name: "Definir lista de discos para VM"
+  set_fact:
+    vm_disks: >
+      {{
+        [
+          { "size_gb": (disk_size | int) }
+        ]
+        +
+        ( [ { "size_gb": (extra_disk_size | int) } ] if (add_extra_disk|bool) else [] )
+      }}
+
+- name: Personalização da VM "{{ vm_name }}"
+  community.vmware.vmware_guest:
+    ## Autenticação através das informações armazenadas no AWX [Resources/Credentials]
+    hostname: "{{ lookup('ansible.builtin.env', 'VMWARE_HOST') }}"
+    username: "{{ lookup('ansible.builtin.env', 'VMWARE_USER') }}"
+    password: "{{ lookup('ansible.builtin.env', 'VMWARE_PASSWORD') }}"
+    validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default(true) }}"
+    ## Dados de Alocação da VM
+    datacenter: "{{ datacenter }}"
+    cluster: "{{ cluster }}"
+    folder: "{{ folder }}"
+    datastore: "{{ datastore }}"
+    ## Parâmetros da VM
+    name: "{{ vm_name }}"
+    guest_id: "{{ guest_id_map[os_choice] }}"
+    hardware:
+      num_cpus: "{{ cpus }}"
+      hotadd_cpu: true
+      hotremove_cpu: true
+      memory_mb: "{{ memory }}"
+      hotadd_memory: true
+      scsi: lsilogic
+    disk: "{{ vm_disks }}"
+    convert: thin
+    networks:
+      - name: "{{ network }}"
+    state: poweredon
+    wait_for_ip_address: true
+  register: createvm
+
+
+# Adicionar tags à VM
+- name: Adicionar tags à VM "{{ vm_name }}"
+  community.vmware.vmware_tag_manager:
+    hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+    username: "{{ lookup('env', 'VMWARE_USER') }}"
+    password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+    validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default(false) }}"
+    tag_names: ["{{ tag_name | default('default-tag') }}"]
+    object_name: "{{ vm_name }}"
+    object_type: VirtualMachine
+    state: present
+
+# Definir o endereço IP da VM como um fato
+- name: Definir IP da VM como fato
+  set_stats:
+    data:
+      vm_ip_address: "{{ createvm.instance.ipv4 }}"

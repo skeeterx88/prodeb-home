@@ -1,0 +1,21 @@
+- name: Configurar chave SSH da COSAO
+  ansible.posix.authorized_key:
+    user: root
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/cosao
+
+- name: Adiciona usuário do Forescout
+  ansible.builtin.user:
+    name: forescout
+    shell: /bin/bash
+    comment: "Usuário do serviço Forescout - PRODEB"
+
+- name: Configurar chave SSH do Forescout
+  ansible.posix.authorized_key:
+    user: forescout
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/forescout

@@ -1,0 +1,11 @@
+- name: Verificar/Instalar ferramentas padrão e outras dependências
+  package:
+    name:
+      - unzip
+      - wget
+      - nano
+      - telnet
+      - mlocate
+    state: present
+  become: true
+

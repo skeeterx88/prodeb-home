@@ -1,0 +1,25 @@
+---
+- name: Modificar hostname
+  ansible.builtin.hostname:
+    name: "{{ vm_name }}"
+
+- block:
+    - name: Configurar endereço IP
+      shell: "nmcli con mod $(ip route show default | awk '{print $5}') ipv4.address {{ vm_ip_address_final }}/{{ network_map[vm_network].mask }}"
+      
+    - name: Configurar Gateway
+      shell: "nmcli con mod $(ip route show default | awk '{print $5}') ipv4.gateway {{ network_map[vm_network].gateway }}"
+      
+    - name: Ativar configuração de IP estático
+      shell: "nmcli con mod $(ip route show default | awk '{print $5}') ipv4.dns '{{ dns }}'"
+
+    - name: Ativar configuração de IP estático
+      shell: "nmcli con mod $(ip route show default | awk '{print $5}') ipv4.method manual"
+
+    - name: Atualizar Configurações de Rede
+      shell: "nmcli con up $(ip route show default | awk '{print $5}')"
+      async: 1
+      poll: 0
+      ignore_errors: true
+
+  when: vm_ip_address_final is defined

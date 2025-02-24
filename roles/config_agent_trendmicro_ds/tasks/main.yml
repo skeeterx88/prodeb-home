@@ -1,0 +1,24 @@
+- name: Verificando se o (ds_agent)  existe
+  shell: service ds_agent status 
+  register: ds_status
+  ignore_errors: true
+
+- debug:
+    var: ds_status
+
+- name: Baixando arquivos instalação
+  ansible.builtin.get_url:
+    url: http://www.portalprodeb.ba.gov.br/ftp/cosao/NDR/Linux/Producao-v2.sh
+    dest: /tmp/ds_install.sh
+    mode: '0755'
+  when: ds_status.rc != 0
+
+- name: Instalação do TrendMicro Deep Security (ds_agent)
+  shell: '/tmp/ds_install.sh'
+  register: ds_install
+  when: ds_status.rc != 0
+
+- debug:
+    var: ds_install
+
+

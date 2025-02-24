@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Pedro Veríssimo
+  description: Role para criar VMs automaticamente no VMware
+  company: Prodeb
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: RedHat
+      versions:
+        - 8
+        - 9
+    - name: Ubuntu
+      versions:
+        - 20.04
+        - 22.04
+    - name: OracleLinux
+      versions:
+        - 8
+        - 9

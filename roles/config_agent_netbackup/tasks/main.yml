@@ -1,0 +1,72 @@
+---
+- name: Create a temporary directory for download
+  file:
+    path: /tmp/netbackup_install
+    state: directory
+    mode: '0755'
+
+- name: Download NetBackup Client tar.gz
+  get_url:
+    url: "{{ netbackup_download_url }}"
+    dest: "/tmp/netbackup_install/netbackup_client.tar.gz"
+    mode: '0644'
+
+- name: Extract netbackup tarball
+  unarchive:
+    src: "/tmp/netbackup_install/netbackup_client.tar.gz"
+    dest: "/tmp/netbackup_install/"
+    remote_src: true
+
+- name: Instalar pré-requisitos
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - libnsl
+    - python-pexpect
+
+- name: Install NetBackup client
+  ansible.builtin.expect:
+    chdir: "/tmp/netbackup_install/NetBackup_10.1.1_CLIENTS2"
+    command: './install'
+    responses:
+      "Do you wish to continue?" : "y"
+      "Do you want to install the NetBackup client software for this client?" : "y"
+      "Enter the name of the NetBackup primary server" : "{{ netbackup_master_server }}"
+      "name of the NetBackup client?" : "y"
+      "Is this correct?" : "y"
+      "Enter the authorization token for" : "{{ netbackup_token }}"
+      "Java GUI and JRE option" : "2"
+    timeout: 600
+  register: netbackup_install
+  changed_when: "'Installation complete' in netbackup_install.stdout"
+
+- name: Ensure bp.conf exists
+  file:
+    path: "{{ netbackup_bpconf_file }}"
+    state: touch
+  become: true
+
+- name: Add MASTER_SERVER line to bp.conf
+  lineinfile:
+    path: "{{ netbackup_bpconf_file }}"
+    line: "SERVER = {{ netbackup_master_server }}"
+    insertafter: EOF
+  become: true
+
+- name: Add additional servers to bp.conf
+  lineinfile:
+    path: "{{ netbackup_bpconf_file }}"
+    line: "SERVER = {{ item }}"
+    insertafter: EOF
+  loop: "{{ netbackup_servers }}"
+  become: true
+
+- name: Set CLIENT_NAME in bp.conf
+  lineinfile:
+    path: "{{ netbackup_bpconf_file }}"
+    regexp: '^CLIENT_NAME='
+    line: "CLIENT_NAME={{ netbackup_client_name }}"
+    insertafter: EOF
+  become: true
+

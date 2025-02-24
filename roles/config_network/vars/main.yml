@@ -1,0 +1,14 @@
+network_map:
+  VLAN_LABORATORIO:
+    mask: 24
+    gateway: 10.2.210.254
+
+  VLAN_COSAO_DESKTOPS:
+    mask: 24
+    gateway: 10.2.22.254
+
+  VLAN_DC_DESENVOLVIMENTO:
+    mask: 24
+    gateway: 10.2.200.254
+
+dns: "10.2.8.187 10.2.8.188"

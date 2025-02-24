@@ -1,0 +1,17 @@
+# Variáveis padrão para a role create_vm
+datacenter: "Datacenter"
+# cluster: "PRODUCAO"
+# folder: "/PRODEB/DTC/COSAO/AUTOMACAO"
+# network: "VLAN_LABORATORIO"
+# datastore: "AA_HUAWEI_ANSIBLE"
+
+# Nome da tag padrão para as VMs
+tag_name: "teste2:teste2"
+
+# Descrições:
+# - datacenter: Define o datacenter onde a VM será criada.
+# - cluster: Nome do cluster onde a VM será alocada.
+# - folder: Caminho da pasta no VMware onde a VM será armazenada.
+# - network: Nome da rede que será associada à VM.
+# - datastore: Nome do datastore para armazenar os discos da VM.
+# - tag_name: Define o nome da tag que será atribuída à VM no VMware.

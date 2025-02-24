@@ -1,0 +1,16 @@
+---
+# tasks file for ceph-common
+
+- name: Install Ceph common packages
+  apt:
+    name: 
+      - ceph
+      - ceph-common
+    state: present
+    update_cache: yes
+
+- name: Configure Ceph repository
+  template:
+    src: ceph.repo.j2
+    dest: /etc/apt/sources.list.d/ceph.list
+  notify: update apt cache

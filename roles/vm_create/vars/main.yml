@@ -1,0 +1,37 @@
+# Mapeamento de templates no VMware por sistema operacional
+templates_map:
+  Oracle Linux 9.5: TEMPLATE_AAP_OracleLinux_9.5
+  Oracle Linux 8.10: TEMPLATE_AAP_OracleLinux_8.10
+  Oracle Linux 7.9 (EOL): TEMPLATE_AAP_OracleLinux_7.9
+  Ubuntu 24.04 LTS: TEMPLATE_AAP_Ubuntu_24.04
+  Ubuntu 22.04 LTS: TEMPLATE_AAP_Ubuntu_22.04
+  Ubuntu 20.04 LTS (EOL): TEMPLATE_AAP_Ubuntu_20.04
+  Windows Server 2022 Standart: TEMPLATE_AAP_Windows_2022_STD
+  Windows Server 2022 Datacenter: TEMPLATE_AAP_Windows_2022_DC
+  Windows Server 2019 Standart: TEMPLATE_AAP_Windows_2019_STD
+  Windows Server 2019 Datacenter: TEMPLATE_AAP_Windows_2019_DC
+
+# Mapeamento de IDs de sistemas operacionais suportados
+guest_id_map:
+  Oracle Linux 9.5: oracleLinux64Guest
+  Oracle Linux 8.10: oracleLinux64Guest
+  Oracle Linux 7.9 (EOL): oracleLinux64Guest
+  Ubuntu 24.04 LTS: ubuntu64Guest
+  Ubuntu 22.04 LTS: ubuntu64Guest
+  Ubuntu 20.04 LTS (EOL): ubuntu64Guest
+  Windows Server 2022 Standart: windows2022srv_64Guest
+  Windows Server 2022 Datacenter: windows2022srv_64Guest
+  Windows Server 2019 Standart: windows2019srv_64Guest
+  Windows Server 2019 Datacenter: windows2019srv_64Guest
+
+# Nome e identificador padrão para a VM
+vm_name_id: "{{ vm_name }}"
+vm_name_temp: "{{ vm_name_id }}-pendente"
+
+# Caminho do disco da VM no datastore
+#filename_disk: "[{{ datastore }}]/ AUTOMACAO/{{ vm_name_id }}.vmdk"
+
+cluster: "{{ vm_cluster     | default('PRODUCAO') }}"
+folder: "{{ vm_folder       | default('/PRODEB/DTC/COSAO/AUTOMACAO') }}"
+datastore: "{{ vm_datastore | default('AA_HUAWEI_ANSIBLE') }}"
+network: "{{ vm_network     | default('VLAN_LABORATORIO') }}"

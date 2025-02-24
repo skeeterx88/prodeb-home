@@ -1,0 +1,55 @@
+---
+- name: Criar todas as VMs do cluster
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    vm_definitions:
+        ### CEPH
+      - vm_name: mon1
+        memory: 8192
+        cpus: 4
+        os_choice: "Oracle Linux 9.5"
+        disk_size: 50
+      - vm_name: mon2
+        memory: 8192
+        cpus: 4
+        os_choice: "Oracle Linux 9.5"
+        disk_size: 50
+      - vm_name: osd1
+        memory: 8192
+        cpus: 4
+        os_choice: "Oracle Linux 9.5"
+        disk_size: 50
+        add_extra_disk: true
+        extra_disk_size: 300
+      - vm_name: osd2
+        memory: 8192
+        cpus: 4
+        os_choice: "Oracle Linux 9.5"
+        disk_size: 50
+        add_extra_disk: true
+        extra_disk_size: 300
+      - vm_name: osd3
+        memory: 8192
+        cpus: 4
+        os_choice: "Oracle Linux 9.5"
+        disk_size: 50
+        add_extra_disk: true
+        extra_disk_size: 300        
+
+  tasks:
+    - name: Create VMs in a loop
+      include_role:
+        name: vm_create
+      loop: "{{ vm_definitions }}"
+      loop_control:
+        loop_var: vm
+      vars:
+        vm_name: "COSAO-{{ projeto }}-{{ vm.vm_name }}-cephcluster"
+        memory: "{{ vm.memory }}"
+        cpus: "{{ vm.cpus }}"
+        os_choice: "{{ vm.os_choice }}"
+        disk_size: "{{ vm.disk_size }}"
+        add_extra_disk: false
+      register: vm_create_results        

@@ -1,0 +1,7 @@
+---
+# handlers file for ceph-osd
+
+- name: restart ceph osd
+  service:
+    name: ceph-osd
+    state: restarted

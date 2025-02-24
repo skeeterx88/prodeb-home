@@ -1,0 +1,17 @@
+---
+# tasks file for ceph-osd
+
+- name: Install Ceph OSD packages
+  apt:
+    name: ceph-osd
+    state: present
+  notify: restart ceph osd
+
+- name: Prepare OSD disk
+  command: ceph-volume lvm create --data /dev/sdX
+  with_items: "{{ osd_devices }}"
+  when: osd_devices is defined
+
+- name: Activate OSD
+  command: ceph-volume lvm activate --all
+  notify: restart ceph osd
